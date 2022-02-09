@@ -1,0 +1,19 @@
+# API Keys and usernames.
+private.py
+username_whitelist.txt
+
+# Database and config related
+*.db
+*.json
+
+# MacOS DS_Store
+.DS_Store
+
+# Virtual env, IDE and .pyc files.
+venv
+.idea
+__pycache__
+*.pyc
+
+# File used for local debugging.
+tests.py
