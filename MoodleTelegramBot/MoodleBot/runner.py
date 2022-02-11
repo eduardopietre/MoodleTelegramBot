@@ -3,7 +3,7 @@ from datetime import datetime, timezone, timedelta
 from dataclasses import dataclass
 from .scrapper import MoodleScraper
 from .logger import LOGGER
-from .scrapperconfig import ScrapperConfig
+from MoodleTelegramBot.botconfig import BotConfig
 
 
 @dataclass
@@ -32,7 +32,7 @@ class BotResult:
 
 
 
-def run_scrapper(scrapper_config: ScrapperConfig, callback):
+def run_scrapper(scrapper_config: BotConfig, callback):
     def __run_scrapper():
         try:
             scraper = MoodleScraper(

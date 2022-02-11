@@ -10,7 +10,7 @@ from MoodleTelegramBot.TelegramBot.timer import RepeatedTimer
 from MoodleTelegramBot.TelegramBot.basebot import BaseBot
 
 from MoodleTelegramBot.MoodleBot import BotResult, run_scrapper
-from MoodleTelegramBot.MoodleBot.scrapperconfig import ScrapperConfig
+from MoodleTelegramBot.botconfig import BotConfig
 
 
 def commands_helper_str():
@@ -27,12 +27,15 @@ def commands_helper_str():
 
 class MoodleBot(BaseBot):
 
-    def __init__(self, token: str, database_file: str,
-                 whitelisted_users: set[str], scrapper_config: ScrapperConfig, check_delay: int):
-        super().__init__(token, database_file, whitelisted_users)
+    def __init__(self, config: BotConfig):
+        super().__init__(
+            config.telegram_bot_token,
+            config.username_chat_id_cache,
+            config.username_whitelist
+        )
 
-        self.scrapper_config = scrapper_config
-        self.check_delay = check_delay
+        self.scrapper_config = config
+        self.check_delay = config.check_delay
 
         self.repeating_check: Optional[RepeatedTimer] = None
         self.previous_result: BotResult = BotResult.empty()
