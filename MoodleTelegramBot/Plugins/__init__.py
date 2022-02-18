@@ -17,7 +17,7 @@ def load_plugins(plugins_dict: dict) -> [BasePlugin]:
 
     for plugin_name, plugin_config in plugins_dict.items():
         try:
-            module = importlib.import_module(plugin_name)
+            module = importlib.import_module(f"MoodleTelegramBot.Plugins.{plugin_name}")
             base_class = getattr(module, plugin_name)
             instance = base_class(plugin_config)
             plugins_instance.append(instance)

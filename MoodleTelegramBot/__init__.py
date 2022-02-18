@@ -113,6 +113,21 @@ class MoodleBot(BaseBot):
         self.scrapper_thread.start()
 
 
+    def message_from_results(self) -> str:
+        messages = []
+        for result in self.previous_results.values():
+            if result.message or result.is_empty():
+                messages.append(result.get_message())
+            elif result.error:
+                messages.append(str(result.error))
+            else:
+                messages.append(f"{result.display_name} Não encontramos o último resultado.")
+
+        if messages:
+            return "\n\n".join(messages)
+
+        return "Não encontramos nunhum último resultado."
+
     # Start commands handlers
 
 
@@ -126,14 +141,14 @@ class MoodleBot(BaseBot):
         if is_auth:
             self.authenticate_user(user, update.effective_message.chat_id)
 
-        update.message.reply_markdown_v2(message)
+        self.reply_update(update, message)
 
 
     def cmd_text(self, update: Update, context: CallbackContext) -> None:
         if not self.auth_manager.is_user_authorized(update.effective_user):
             return
 
-        update.message.reply_text(f"Não há comandos com essas palavras.\n{commands_helper_str()}")
+        self.reply_update(update, f"Não há comandos com essas palavras.\n{commands_helper_str()}")
 
 
     def cmd_check(self, update: Update, context: CallbackContext) -> None:
@@ -141,9 +156,9 @@ class MoodleBot(BaseBot):
             return
 
         if self.is_scrapping:
-            update.message.reply_text(f"Uma verificação já está em andamento, deseja forçar o cancelamento?\nUse /cancel")
+            self.reply_update(update, f"Uma verificação já está em andamento, deseja forçar o cancelamento?\nUse /cancel")
         else:
-            update.message.reply_text(f"Entendido. Iniciando verificação, por favor aguarde...")
+            self.reply_update(update, f"Entendido. Iniciando verificação, por favor aguarde...")
             self.run_scrapper()
 
 
@@ -153,22 +168,16 @@ class MoodleBot(BaseBot):
 
         if self.is_scrapping:
             self.is_scrapping = False
-            update.message.reply_text(f"Tentativa de cancelar recebida.")
+            self.reply_update(update, f"Tentativa de cancelar recebida.")
         else:
-            update.message.reply_text(f"Não há verificação a ser cancelada.")
+            self.reply_update(update, f"Não há verificação a ser cancelada.")
 
 
     def cmd_echo(self, update: Update, context: CallbackContext) -> None:
         if not self.auth_manager.is_user_authorized(update.effective_user):
             return
 
-        for plugin_name, result in self.previous_results:
-            if result.message or result.is_empty():
-                update.message.reply_text(result.get_message())
-            elif result.error:
-                update.message.reply_text(str(result.error))
-            else:
-                update.message.reply_text("Não encontramos o último resultado.")
+        self.reply_update(update, self.message_from_results())
 
 
     def cmd_next(self, update: Update, context: CallbackContext) -> None:
@@ -184,10 +193,10 @@ class MoodleBot(BaseBot):
             minutes = int((interval % (60 * 60)) / 60)
             seconds = round(interval % 60)
 
-            update.message.reply_text(f"Verificação em {hours} hora(s), {minutes} minuto(s) e {seconds} segundo(s).")
+            self.reply_update(update, f"Verificação em {hours} hora(s), {minutes} minuto(s) e {seconds} segundo(s).")
 
         else:
-            update.message.reply_text("Não encontramos a verificação recorrente.")
+            self.reply_update(update, "Não encontramos a verificação recorrente.")
 
 
     # End command handlers

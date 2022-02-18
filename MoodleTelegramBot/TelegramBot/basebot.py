@@ -1,6 +1,6 @@
 from typing import Any
 
-from telegram import User
+from telegram import User, Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 from .authentication import AuthManager
@@ -29,6 +29,15 @@ class BaseBot:
 
     def is_user_authenticate(self, user: User):
         self.auth_manager.is_user_authorized(user)
+
+
+    def reply_update(self, update: Update, message: str) -> None:
+        max_len = 4000  # 4096 in reality, but use 4000
+        if len(message) > max_len:
+            for i in range(0, len(message), max_len):
+                update.message.reply_text(message[i:i + max_len])
+        else:
+            update.message.reply_text(message)
 
 
     def send_message_to_chat_id(self, chat_id: int, message: str) -> None:

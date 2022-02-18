@@ -38,7 +38,8 @@ class MoodleBot(BasePlugin):
             log = scraper.scraper(self.courses)
 
             return PluginResult(
-                plugin_name="MoodleBot",
+                plugin_name=self.plugin_name,
+                display_name=self.display_name,
                 new=True,
                 message=log,
                 error=None,
@@ -48,7 +49,8 @@ class MoodleBot(BasePlugin):
         except Exception as error:
             LOGGER.error(f"Exception at run_scrapper: {error}")
             return PluginResult(
-                plugin_name="MoodleBot",
+                plugin_name=self.plugin_name,
+                display_name=self.display_name,
                 new=False,
                 message=None,
                 error=error,

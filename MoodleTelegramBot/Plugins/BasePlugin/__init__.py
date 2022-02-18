@@ -7,6 +7,7 @@ from typing import Optional
 @dataclass
 class PluginResult:
     plugin_name: str
+    display_name: str
     new: bool
     message: Optional[str]
     error: Optional[Exception]
@@ -23,11 +24,11 @@ class PluginResult:
         if self.is_empty():
             return f"[{self.strftime()}]\nÚltimo resultado não encontrou novas alterações."
 
-        return f"{self.plugin_name} alterações encontradas em [{self.strftime()}]:\n{self.message}"
+        return f"{self.display_name} alterações encontradas em [{self.strftime()}]:\n{self.message}"
 
     @staticmethod
     def empty():
-        return PluginResult("-", False, None, None, datetime.now())
+        return PluginResult("-", "-", False, None, None, datetime.now())
 
 
 class BasePlugin(ABC):
