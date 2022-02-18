@@ -1,6 +1,5 @@
 import json
-from MoodleTelegramBot.bot import MoodleBot
-from MoodleTelegramBot.botconfig import BotConfig
+from MoodleTelegramBot import MoodleBot, BotConfig
 
 
 def un_cypher_if_exists():
