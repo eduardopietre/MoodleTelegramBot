@@ -8,9 +8,7 @@ from telegram.ext import CallbackContext
 
 from MoodleTelegramBot import Plugins
 from MoodleTelegramBot.Plugins.BasePlugin import PluginResult, BasePlugin
-from MoodleTelegramBot.TelegramBot import utils
-from MoodleTelegramBot.TelegramBot.timer import RepeatedTimer
-from MoodleTelegramBot.TelegramBot.basebot import BaseBot
+from MoodleTelegramBot.TelegramBot import greetings_for_user, RepeatedTimer, BaseBot
 
 
 @dataclass
@@ -123,7 +121,7 @@ class MoodleBot(BaseBot):
 
         user = update.effective_user
         is_auth = self.auth_manager.is_user_authorized(user)
-        message = utils.greetings_for_user(user, is_auth)
+        message = greetings_for_user(user, is_auth)
 
         if is_auth:
             self.authenticate_user(user, update.effective_message.chat_id)
