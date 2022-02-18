@@ -28,5 +28,7 @@
             "name": "Course 2222",
             "parser": "older"
         }
-    ]
+    ],
+    "plugins": {
+    }
 }
