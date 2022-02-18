@@ -19,7 +19,7 @@ class PluginResult:
         local_date = self.date.astimezone(tz=timezone(-timedelta(hours=3)))
         return local_date.strftime("%d/%m/%Y %H:%M:%S")
 
-    def message(self):
+    def get_message(self):
         if self.is_empty():
             return f"[{self.strftime()}]\nÚltimo resultado não encontrou novas alterações."
 

@@ -5,11 +5,12 @@ from typing import Optional
 from telegram import Update
 from telegram.ext import CallbackContext
 
+from MoodleTelegramBot import Plugins
+from MoodleTelegramBot.Plugins.BasePlugin import PluginResult, BasePlugin
 from MoodleTelegramBot.TelegramBot import utils
 from MoodleTelegramBot.TelegramBot.timer import RepeatedTimer
 from MoodleTelegramBot.TelegramBot.basebot import BaseBot
 
-from MoodleTelegramBot.MoodleBot import BotResult, run_scrapper
 from MoodleTelegramBot.botconfig import BotConfig
 
 
@@ -38,8 +39,12 @@ class MoodleBot(BaseBot):
         self.check_delay = config.check_delay
 
         self.repeating_check: Optional[RepeatedTimer] = None
-        self.previous_result: BotResult = BotResult.empty()
+
+        self.plugins: [BasePlugin] = Plugins.load_plugins(self.scrapper_config.plugins)
+        self.previous_results: dict[str: PluginResult] = {}
+
         self.is_scrapping = False
+        self.scrapping_done_counter = 0
 
         self.scrapper_thread = None
 
@@ -49,16 +54,21 @@ class MoodleBot(BaseBot):
             self.send_message_to_chat_id(chat_id, message)
 
 
-    def on_callback_result(self, bot_result: Optional[BotResult]):
-        self.is_scrapping = False
-        self.previous_result = bot_result
+    def on_callback_result(self, bot_result: Optional[PluginResult]):
+        self.scrapping_done_counter += 1
+        if self.scrapping_done_counter >= len(self.plugins):
+            self.is_scrapping = False
+            self.scrapping_done_counter = 0
 
-        if self.previous_result.result and self.previous_result.new:
-            self.alert_all_users(self.previous_result.message())
+        self.previous_results[bot_result.plugin_name] = bot_result
+
+        if bot_result.message and bot_result.new:
+            self.alert_all_users(bot_result.get_message())
 
 
     def __internal_run_scrapper(self):
-        run_scrapper(self.scrapper_config, self.on_callback_result)
+        for plugin_instance in self.plugins:
+            plugin_instance.run_scrapper(self.on_callback_result)
 
 
     def run_scrapper(self):
@@ -116,12 +126,13 @@ class MoodleBot(BaseBot):
         if not self.auth_manager.is_user_authorized(update.effective_user):
             return
 
-        if self.previous_result.result or self.previous_result.is_empty():
-            update.message.reply_text(self.previous_result.message())
-        elif self.previous_result.error:
-            update.message.reply_text(str(self.previous_result.error))
-        else:
-            update.message.reply_text("Não encontramos o último resultado.")
+        for plugin_name, result in self.previous_results:
+            if result.message or result.is_empty():
+                update.message.reply_text(result.get_message())
+            elif result.error:
+                update.message.reply_text(str(result.error))
+            else:
+                update.message.reply_text("Não encontramos o último resultado.")
 
 
     def cmd_next(self, update: Update, context: CallbackContext) -> None:
