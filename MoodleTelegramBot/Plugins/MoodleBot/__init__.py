@@ -40,7 +40,7 @@ class MoodleBot(BasePlugin):
             return PluginResult(
                 plugin_name=self.plugin_name,
                 display_name=self.display_name,
-                new=True,
+                new=len(log) > 0,
                 message=log,
                 error=None,
                 date=datetime.now()

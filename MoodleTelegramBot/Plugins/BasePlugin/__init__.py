@@ -22,7 +22,7 @@ class PluginResult:
 
     def get_message(self):
         if self.is_empty():
-            return f"[{self.strftime()}]\nÚltimo resultado não encontrou novas alterações."
+            return f"{self.display_name}: [{self.strftime()}]\nÚltimo resultado não encontrou novas alterações."
 
         return f"{self.display_name} alterações encontradas em [{self.strftime()}]:\n{self.message}"
 
