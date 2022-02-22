@@ -3,7 +3,7 @@ import re
 import concurrent.futures
 from .data import ParserTypes, ScrappedResult, CourseConfig
 from .urlscrapper import UrlScrapper
-from .database import DatabaseConnection
+from MoodleTelegramBot.Database import DatabaseConnection
 
 
 # Small value in an attempt to reduce memory usage.
