@@ -1,4 +1,5 @@
 {
+    "telegram_bot_token": "Telegram_Bot_Token_Here",
     "username_whitelist": [
         "my_username"
     ],
@@ -6,29 +7,31 @@
         "my_username"
     ],
     "check_delay": 3600,
-    "telegram_bot_token": "Telegram_Bot_Token_Here",
     "username_chat_id_cache": "username_chat_id_cache.json",
-    "database": "database.db",
-    "base_url": "https://url.to.moodle/",
-    "login": "moodle_login",
-    "password": "moodle_password",
-    "courses": [
-        {
-            "id": 1111,
-            "name": "Course 1111",
-            "parser": "older"
-        },
-        {
-            "id": 1112,
-            "name": "Course 1112",
-            "parser": "older"
-        },
-        {
-            "id": 2222,
-            "name": "Course 2222",
-            "parser": "older"
-        }
-    ],
     "plugins": {
+        "MoodleBot": {
+            "display_name": "Moodle",
+            "database": "database_moodle01.db",
+            "base_url": "https://url.to.moodle/",
+            "username__cypher": "moodle_login",
+            "password__cypher": "moodle_password",
+            "courses": [
+                {
+                    "id": 1111,
+                    "name": "Course 1111",
+                    "parser": "older"
+                },
+                {
+                    "id": 1112,
+                    "name": "Course 1112",
+                    "parser": "older"
+                },
+                {
+                    "id": 2222,
+                    "name": "Course 2222",
+                    "parser": "older"
+                }
+            ]
+        }
     }
 }
