@@ -17,3 +17,6 @@ __pycache__
 
 # File used for local debugging.
 tests.py
+
+# Test Plugin
+MoodleTelegramBot/Plugins/AvisoScrapper
